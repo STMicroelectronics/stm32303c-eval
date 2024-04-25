@@ -61,11 +61,11 @@
 #define EEPROM_WIP_FLAG         0x01  /*!< Write In Progress (WIP) flag */
 
 /**
- * @brief STM32303C EVAL BSP Driver version number V2.1.4
+ * @brief STM32303C EVAL BSP Driver version number V2.1.5
    */
 #define __STM32303C_EVAL_BSP_VERSION_MAIN       (0x02) /*!< [31:24] main version */
 #define __STM32303C_EVAL_BSP_VERSION_SUB1       (0x01) /*!< [23:16] sub1 version */
-#define __STM32303C_EVAL_BSP_VERSION_SUB2       (0x04) /*!< [15:8]  sub2 version */
+#define __STM32303C_EVAL_BSP_VERSION_SUB2       (0x05) /*!< [15:8]  sub2 version */
 #define __STM32303C_EVAL_BSP_VERSION_RC         (0x00) /*!< [7:0]  release candidate */
 #define __STM32303C_EVAL_BSP_VERSION            ((__STM32303C_EVAL_BSP_VERSION_MAIN << 24)\
                                                 |(__STM32303C_EVAL_BSP_VERSION_SUB1 << 16)\
@@ -1207,7 +1207,8 @@ HAL_StatusTypeDef EEPROM_SPI_IO_WriteData(uint16_t MemAddress, uint8_t* pBuffer,
   SPIx_Write(EEPROM_CMD_WRITE);
   
   /*!< Send MemAddress high nibble address byte to write to */
-  SPIx_Write((MemAddress & 0xFF0000) >> 16);
+  /*!<  A23 to A16 of the 24-bit address are Don't Care and forced to 0 */
+  SPIx_Write(0);
   
   /*!< Send MemAddress medium nibble address byte to write to */
   SPIx_Write((MemAddress & 0xFF00) >> 8);
@@ -1257,8 +1258,8 @@ HAL_StatusTypeDef EEPROM_SPI_IO_ReadData(uint16_t MemAddress, uint8_t* pBuffer, 
   /*!< Send "Write to Memory " instruction */
   SPIx_Write(EEPROM_CMD_READ);
   
-  /*!< Send MemAddress high nibble address byte to write to */
-  SPIx_Write((MemAddress & 0xFF0000) >> 16);
+  /*!<  A23 to A16 of the 24-bit address are Don't Care and forced to 0 */
+  SPIx_Write(0);
   
   /*!< Send WriteAddr medium nibble address byte to write to */
   SPIx_Write((MemAddress & 0xFF00) >> 8);
